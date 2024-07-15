@@ -9,7 +9,7 @@ class MovieDataSerializer(serializers.ModelSerializer):
 class ActorDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Actor
-        fields = "__all__"
+        exclude = ['movie']
 
 class ShowPosterTitleSerializer(serializers.ModelSerializer):
     class Meta:
