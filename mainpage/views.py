@@ -19,6 +19,7 @@ def init_db(request):
     res = requests.get(url)
     movies = res.json()['movies']
     data = {}
+    data_ = {}
     for movie in movies:
         data["title_kor"] = movie['title_kor']
         data["title_eng"] = movie["title_eng"]
@@ -32,19 +33,18 @@ def init_db(request):
         data["director_image_url"] = movie["director_image_url"]
         serializer = MovieDataSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
-            data={}
+            a = serializer.save() # a로 save()된 같은 반환해서
 
-        for movie in movies:
-            data["name"] = movie["name"]
-            data["character"] = movie["character"]
-            data["image_url"] = movie["image_url"]
-            serializer = ActorDataSerializer(data=data)
-            if serializer.is_valid():
-                serializer.save()
-                data={}
+            for actors in movie['actors']:
+                data_["name"] = actors["name"]
+                data_["character"] = actors["character"]
+                data_["image_url"] = actors["image_url"]
+                serializer1 = ActorDataSerializer(data=data_)
+                if serializer1.is_valid(raise_exception=True):  # raise_exception=True 꼭 넣기   # serializer보면 ActorDataSerializer의 fields를 '__all__'이라 해서 유효성을 통과 못해서 actors 데이터가 저장이 안됨. 왜냐면 model에는 movie가 있는데 movie 데이터를 안 받았기 때문 so, ActorDataSerializer에 movie 필드를 exclude
+                    serializer1.save(movie=a) # 1:N 연결 (movie(1):actors(N))
+                    data_={}
 
-    return Response(request.data, status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_200_OK)
 
 
 class MovieList(APIView):
@@ -65,6 +65,6 @@ class MovieDetail(APIView):
 
     def get(self, request, pk):
         movie = self.get_object(pk)
-        serializer = ShowDetailSerializer(movie, many=True)
+        serializer = ShowDetailSerializer(movie, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

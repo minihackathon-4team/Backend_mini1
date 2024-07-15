@@ -10,13 +10,13 @@ class Movie(models.Model):
     plot = models.TextField(default='')
     rating = models.CharField(max_length=10)
     director_name = models.CharField(max_length=30)
-    director_image_url = models.TextField(default='')
+    director_image_url = models.TextField(default='', null=True)
     
 class Actor(models.Model):
     movie = models.ForeignKey(Movie, null=False, on_delete=models.CASCADE, related_name='actors')
     name = models.CharField(max_length=30)
     character = models.CharField(max_length=30)
-    image_url = models.TextField(default='')
+    image_url = models.TextField(default='', null=True)
 
 """
 class Comment(models.Model):
