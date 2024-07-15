@@ -1,6 +1,7 @@
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from allauth.account.adapter import get_adapter
 from rest_framework import serializers
+from .models import *
 
 class CustomRegisterSerializer(RegisterSerializer):
     nickname = serializers.CharField(max_length=100)
@@ -24,3 +25,8 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.save()
         adapter.save_user(request, user, self)
         return user
+
+class CustomUserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'password', 'nickname']
