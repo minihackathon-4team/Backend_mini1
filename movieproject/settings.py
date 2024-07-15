@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'member',
     'mainpage',
-    'detailpage',
     #rest framework 관련
     'rest_framework',
     'rest_framework.authtoken',
