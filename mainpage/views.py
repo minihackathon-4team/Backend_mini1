@@ -13,22 +13,24 @@ import requests
 
 # Create your models here.
 
+@api_view(['GET'])
 def init_db(request):
     url = "https://port-0-minihackathon-12-lyec0qpi97716ac6.sel5.cloudtype.app/movie"
     res = requests.get(url)
     movies = res.json()['movies']
+    data = {}
     for movie in movies:
         data["title_kor"] = movie['title_kor']
         data["title_eng"] = movie["title_eng"]
         data["poster_url"] = movie["poster_url"]
         data["genre"] = movie["genre"]
         data["showtime"] = movie["showtime"]
-        data["release_data"] = movie["release_data"]
+        data["release_date"] = movie["release_date"]
         data["plot"] = movie["plot"]
         data["rating"] = movie["rating"]
         data["director_name"] = movie["director_name"]
-        data["dirctor_image_url"] = movie["dirctor_image_url"]
-        serializer = MovieDataSerializer(data)
+        data["director_image_url"] = movie["director_image_url"]
+        serializer = MovieDataSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             data={}
@@ -37,7 +39,7 @@ def init_db(request):
             data["name"] = movie["name"]
             data["character"] = movie["character"]
             data["image_url"] = movie["image_url"]
-            serializer = ActorDataSerializer(data)
+            serializer = ActorDataSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
                 data={}
@@ -52,4 +54,17 @@ class MovieList(APIView):
         movies = Movie.objects.all()
         serializer = ShowPosterTitleSerializer(movies, many=True)
         return Response(serializer.data)
+
+class MovieDetail(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [AllowAny]
+
+    def get_object(self, pk):
+        movie = get_object_or_404(Movie, pk=pk)
+        return movie
+
+    def get(self, request, pk):
+        movie = self.get_object(pk)
+        serializer = ShowDetailSerializer(movie, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
