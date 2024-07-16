@@ -148,7 +148,7 @@ from datetime import timedelta
 #ACCOUNT_EMAIL_REQUIRED = False # 이 부분
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1), # 이 부분
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=20), # 이 부분
     'REFRESH_TOKEN_LIFETIME' : timedelta(days=1), # 이 부분
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
