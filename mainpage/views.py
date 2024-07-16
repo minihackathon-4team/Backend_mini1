@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import *
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 import requests
 
@@ -65,6 +65,35 @@ class MovieDetail(APIView):
 
     def get(self, request, pk):
         movie = self.get_object(pk)
-        serializer = ShowDetailSerializer(movie, many=True)
+        serializer = ShowDetailSerializer(movie, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class CommentGet(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self, pk):
+        comment = get_object_or_404(Comment, pk=pk)
+        return comment
+        
+    def get(self, request, pk):
+        comment = self.get_object(pk=pk)
+        serializer = CommentResponseSerializer(comment)
+        return Response(serializer.data)
+
+class CommentPost(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, movie_id):
+        try:
+            movie = Movie.objects.get(pk=movie_id)   
+        except Movie.DoesNotExist:
+            return Response({"error": "Movie not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = CommentRequestSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            new_comment = serializer.save(movie=movie, user=request.user)
+            response = CommentResponseSerializer(new_comment)
+            return Response(response.data, status=status.HTTP_201_CREATED)
+        return Response(response.errors, status=status.HTTP_400_BAD_REQUEST)   
