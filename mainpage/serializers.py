@@ -5,7 +5,7 @@ from django.utils import timezone
 class MovieDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        exclude = ["nickname"]
+        fields = '__all__'
 
 class ActorDataSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,7 +15,7 @@ class ActorDataSerializer(serializers.ModelSerializer):
 class ShowPosterTitleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        fields = ['title_kor', 'title_eng', 'poster_url']
+        fields = ['id', 'title_kor', 'title_eng', 'poster_url']
 
 class CommentRequestSerializer(serializers.ModelSerializer):
     class Meta:
