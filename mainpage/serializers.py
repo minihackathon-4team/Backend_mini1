@@ -5,7 +5,7 @@ from django.utils import timezone
 class MovieDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        fields = '__all__'
+        exclude = ["nickname"]
 
 class ActorDataSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,10 +24,11 @@ class CommentRequestSerializer(serializers.ModelSerializer):
 
 class CommentResponseSerializer(serializers.ModelSerializer):
     created_at = serializers.SerializerMethodField()
+    nickname = serializers.CharField(source='user.nickname',read_only=True)
     
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'comment', 'created_at']
+        fields = ['nickname', 'comment', 'created_at']
 
     def get_created_at(self, obj):
         time = timezone.localtime(obj.created_at)
@@ -35,9 +36,9 @@ class CommentResponseSerializer(serializers.ModelSerializer):
 
 class ShowDetailSerializer(serializers.ModelSerializer):
     actors = ActorDataSerializer(many=True, read_only=True)
-    nickname = serializers.CharField(source='user.nickname',read_only=True)    ######
+    # nickname = serializers.CharField(source='user.nickname',read_only=True)    ######
     comments = CommentResponseSerializer(many=True, read_only=True)   #####
 
     class Meta:
         model = Movie
-        fields = "__all__"
+        fields = '__all__'
