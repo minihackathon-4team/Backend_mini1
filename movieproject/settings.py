@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['100.28.147.48', 'hottomato.store', '127.0.0.1']
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
+    "http://localhost:3000",
     "http://127.0.0.1:8000"]
 
 CORS_ALLOW_CREDENTIALS = True
