@@ -22,20 +22,11 @@ class ShowDetailSerializer(serializers.ModelSerializer):
         model = Movie
         fields = "__all__"
 
-"""
-class CommentRequestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ['comment']
-
-class CommentResponseSerializer(serializers.ModelSerializer):
-    created_at = serializers.serializerMethodField()
+#여기부터 수정
+class MovieDetailSerializer(serializers.ModelSerializer):
     nickname = serializers.CharField(source='user.nickname', read_only=True)
+    comments = CommentResponseSerializer(many=True, read_only=True)
     class Meta:
-        model = Comment
-        fields = ['nickname', 'comment', 'created_at']
-    def get_created_at(self, obj):
-        time = timezone.localtime(obj.created_at)
-        return time.strftime('%Y-%m-%d')
-        """
+        model = Movie
+        fields = '__all__'
     
