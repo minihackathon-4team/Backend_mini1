@@ -1,4 +1,5 @@
 from django.db import models
+from member.models import CustomUser
 
 class Movie(models.Model):
     title_kor = models.CharField(max_length=100)
@@ -18,10 +19,8 @@ class Actor(models.Model):
     character = models.CharField(max_length=30)
     image_url = models.TextField(default='', null=True)
 
-"""
 class Comment(models.Model):
-    user = models.ForeignKey(CustomUser, null=True, on_delete=models.CASCADE)
-    movie = models.ForeignKey(Movie, null=False, on_delete=models.CASCADE, related_name='comments')
+    movie = models.ForeignKey(Movie, null=True, on_delete=models.CASCADE, related_name="movies")
+    user = models.ForeignKey(CustomUser, null=True, on_delete=models.CASCADE, related_name='users')
     comment = models.TextField(default='')
     created_at = models.DateTimeField(auto_now_add=True)
-    """

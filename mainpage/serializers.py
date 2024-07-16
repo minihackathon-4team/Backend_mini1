@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from django.utils import timezone
 
 class MovieDataSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,20 +23,19 @@ class ShowDetailSerializer(serializers.ModelSerializer):
         model = Movie
         fields = "__all__"
 
-"""
+
 class CommentRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['comment']
 
 class CommentResponseSerializer(serializers.ModelSerializer):
-    created_at = serializers.serializerMethodField()
-    nickname = serializers.CharField(source='user.nickname', read_only=True)
+    created_at = serializers.SerializerMethodField()
+    
     class Meta:
         model = Comment
-        fields = ['nickname', 'comment', 'created_at']
+        fields = ['id', 'user', 'comment', 'created_at']
+
     def get_created_at(self, obj):
         time = timezone.localtime(obj.created_at)
         return time.strftime('%Y-%m-%d')
-        """
-    
