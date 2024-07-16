@@ -7,5 +7,5 @@ urlpatterns = [
     path('', MovieList.as_view()),
     path('detail/<int:pk>/', MovieDetail.as_view()),
     path('db/', init_db),
-    path('comment/<int:pk>/', CommentPost.as_view())
+    path('comment/<int:movie_id>/', CommentDetail.as_view())
 ]
