@@ -73,11 +73,17 @@ class CommentPost(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def post(self, request, movie_id):
+        try:
+            movie = Movie.object.get(pk=movie_id)
+        except Movie.DoesNotExist:
+            return Response({"error": "Movie not found"}, status=status.HTTP_404_NOT_FOUND)
+        
         serializer = CommentRequestSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            new_comment = serializer.save(movie=movie)
+            response = CommentResponseSerializer(new_comment)
+            return Response(response.data, status=status.HTTP_201_CREATED)
+        return Response(response.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def get_object(self, pk):
         comment = get_object_or_404(Comment, pk=pk)
