@@ -68,18 +68,35 @@ class MovieDetail(APIView):
         serializer = ShowDetailSerializer(movie, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class CommentDetail(APIView):
+class CommentPost(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def post(self, request):
+    def post(self, request, movie_id):
         serializer = CommentRequestSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    def get_object(self, pk):
+        comment = get_object_or_404(Comment, pk=pk)
+        return comment
+    
     def get(self, request, pk):
         comment = self.get_object(pk)
         serializer = CommentResponseSerializer(comment, many=True)
         return Response(serializer.data)
+
+# class CommentList(APIView):
+#     authentication_classes = [JWTAuthentication]
+#     permission_classes = [AllowAny]
+
+#     def get_object(self,pk):
+#         comment = get_object_or_404(Comment, pk=pk)
+#         return comment
+    
+#     def get(self,request,pk):
+#         comment = self.get_object(pk)
+#         serializer = CommentResponseSerializer(comment, many=True)
+#         return(serializer.data)
